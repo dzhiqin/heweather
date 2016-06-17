@@ -9,13 +9,33 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+	private Button homeBtn;
+	private Button refreshBtn;
+	private TextView localText;
+	private TextView publishTimeText;
+	private TextView dateText;
+	private TextView despText;
+	private TextView tempText;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
+		
+		homeBtn=(Button)findViewById(R.id.homeBtn);
+		refreshBtn=(Button)findViewById(R.id.refreshBtn);
+		localText=(TextView)findViewById(R.id.localText);
+		publishTimeText=(TextView)findViewById(R.id.publishTimeText);
+		dateText=(TextView)findViewById(R.id.dateText);
+		despText=(TextView)findViewById(R.id.despText);
+		tempText=(TextView)findViewById(R.id.tempText);
+		
 	}
 
 	@Override
