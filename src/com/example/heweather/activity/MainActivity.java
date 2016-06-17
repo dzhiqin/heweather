@@ -4,6 +4,7 @@ import com.example.heweather.R;
 import com.example.heweather.R.id;
 import com.example.heweather.R.layout;
 import com.example.heweather.R.menu;
+import com.example.heweather.util.LogUtil;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -35,6 +36,14 @@ public class MainActivity extends Activity {
 		dateText=(TextView)findViewById(R.id.dateText);
 		despText=(TextView)findViewById(R.id.despText);
 		tempText=(TextView)findViewById(R.id.tempText);
+		String address="https://api.heweather.com/x3/weather?city="+localText.getText().toString()+"key=dc908906531e4c38886eb3245eab890d";
+		LogUtil.v("TAG", "address="+address);
+		queryFromServer(address,"weather");
+		
+	}
+
+	private void queryFromServer(String address, String type) {
+		// TODO 自动生成的方法存根
 		
 	}
 
