@@ -4,10 +4,14 @@ import com.example.heweather.R;
 import com.example.heweather.R.id;
 import com.example.heweather.R.layout;
 import com.example.heweather.R.menu;
+import com.example.heweather.util.HttpCallbackListener;
+import com.example.heweather.util.HttpUtil;
 import com.example.heweather.util.LogUtil;
+import com.example.heweather.util.Utility;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -36,14 +40,32 @@ public class MainActivity extends Activity {
 		dateText=(TextView)findViewById(R.id.dateText);
 		despText=(TextView)findViewById(R.id.despText);
 		tempText=(TextView)findViewById(R.id.tempText);
-		String address="https://api.heweather.com/x3/weather?city="+localText.getText().toString()+"key=dc908906531e4c38886eb3245eab890d";
+		String address="https://api.heweather.com/x3/weather?city="+localText.getText().toString()+"&key=dc908906531e4c38886eb3245eab890d";
 		LogUtil.v("TAG", "address="+address);
 		queryFromServer(address,"weather");
 		
 	}
 
-	private void queryFromServer(String address, String type) {
-		// TODO 自动生成的方法存根
+	private void queryFromServer(final String address, final String type) {
+		HttpUtil.sendHttpRequest(address, new HttpCallbackListener(){
+
+			@Override
+			public void onFinish(String response) {
+				if("weather".equals(type)){
+					if(!TextUtils.isEmpty(response)){
+						Utility.handleWeatherResponse(MainActivity.this,response);
+					}
+				}
+				
+			}
+
+			@Override
+			public void onError(Exception e) {
+				// TODO 自动生成的方法存根
+				
+			}
+			
+		});
 		
 	}
 
