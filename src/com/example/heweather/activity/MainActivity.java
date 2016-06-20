@@ -10,15 +10,19 @@ import com.example.heweather.util.LogUtil;
 import com.example.heweather.util.Utility;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnClickListener{
 
 	private Button homeBtn;
 	private Button refreshBtn;
@@ -40,6 +44,8 @@ public class MainActivity extends Activity {
 		dateText=(TextView)findViewById(R.id.dateText);
 		despText=(TextView)findViewById(R.id.despText);
 		tempText=(TextView)findViewById(R.id.tempText);
+		homeBtn.setOnClickListener(this);
+		refreshBtn.setOnClickListener(this);
 		String address="https://api.heweather.com/x3/weather?city="+localText.getText().toString()+"&key=dc908906531e4c38886eb3245eab890d";
 		LogUtil.v("TAG", "address="+address);
 		queryFromServer(address,"weather");
@@ -54,6 +60,15 @@ public class MainActivity extends Activity {
 				if("weather".equals(type)){
 					if(!TextUtils.isEmpty(response)){
 						Utility.handleWeatherResponse(MainActivity.this,response);
+						MainActivity.this.runOnUiThread(new Runnable(){
+
+							@Override
+							public void run() {
+								showWeather();
+								
+							}
+							
+						});
 					}
 				}
 				
@@ -61,14 +76,31 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onError(Exception e) {
-				// TODO 自动生成的方法存根
-				
+				e.printStackTrace();
+				runOnUiThread(new Runnable(){
+
+					@Override
+					public void run() {
+						publishTimeText.setText("同步失败");
+					}
+					
+				});
 			}
 			
 		});
 		
 	}
 
+	private void showWeather() {
+		SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(this);
+		localText.setText(prefs.getString("cityName", "未知"));
+		publishTimeText.setText(prefs.getString("publishTime", "未知"	));
+		dateText.setText(prefs.getString("todayDate", "未知"));
+		tempText.setText(prefs.getString("todayMin","min")+"~"+prefs.getString("todayMax", "max"));
+		despText.setText(prefs.getString("todayDesp", ""));
+		
+		
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -86,5 +118,18 @@ public class MainActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()){
+		case R.id.homeBtn:
+			
+			break;
+		case R.id.refreshBtn:
+			break;
+		default:break;
+		}
+		
 	}
 }
