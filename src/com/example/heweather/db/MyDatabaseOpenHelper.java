@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class MyDatabaseOpenHelper extends SQLiteOpenHelper{
 
+
 	public static final String CREATE_COUNTY="create table County("
 			+ "id integer primary key autoincrement, "
 			+ "county_id text, "
