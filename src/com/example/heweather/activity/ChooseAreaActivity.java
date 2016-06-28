@@ -72,9 +72,10 @@ public class ChooseAreaActivity extends Activity {
 					queryDistrict();
 				}else if(currentLevel==LEVEL_DISTRICT){
 					String districtName=districtList.get(position).getName();
+					String districtCode=districtList.get(position).getCode();
 					LogUtil.v("TAG", "the selected district is  "+districtName);
 					Intent intent=new Intent(ChooseAreaActivity.this,MainActivity.class);
-					intent.putExtra("districtName",districtName);
+					intent.putExtra("districtCode",districtCode);
 					startActivity(intent);
 					
 					finish();

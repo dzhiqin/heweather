@@ -17,7 +17,8 @@ import android.os.Environment;
 
 public class DBManager {
 	private final int BUFFER_SIZE=1024;
-	public static final String DB_NAME="city.s3db";
+	//public static final String DB_NAME="city.s3db";
+	public static final String DB_NAME="CityId";
 	public static final String PACKAGE_NAME="com.example.heweather";
 	public static final String DB_PATH="/data"+Environment.getDataDirectory().getAbsolutePath()
 			+"/"+PACKAGE_NAME;   //手机里存放数据库的位置

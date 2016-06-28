@@ -47,9 +47,19 @@ public class MainActivity extends Activity implements OnClickListener{
 		tempText=(TextView)findViewById(R.id.tempText);
 		homeBtn.setOnClickListener(this);
 		refreshBtn.setOnClickListener(this);
-		String address="https://api.heweather.com/x3/weather?city="+localText.getText().toString()+"&key=dc908906531e4c38886eb3245eab890d";
-		LogUtil.v("TAG", "address="+address);
-		queryFromServer(address,"weather");
+		
+		//和风天气获取：https://api.heweather.com/x3/weather?city=石狮&key=dc908906531e4c38886eb3245eab890d
+		//city=石狮市获取不到天气
+		//和风天气获取：https://api.heweather.com/x3/weather?cityid=CN101010100&key=dc908906531e4c38886eb3245eab890d
+		String districtCode=getIntent().getStringExtra("districtCode");
+		if(districtCode!=null){
+			String address="https://api.heweather.com/x3/weather?city="+districtCode+"&key=dc908906531e4c38886eb3245eab890d";
+			LogUtil.v("TAG", "address="+address);
+			queryFromServer(address,"weather");
+		}else{
+			showWeather();
+		}
+		
 		
 	}
 
