@@ -24,7 +24,7 @@ public class DBHelper {
 		db=dbm.getDatabase();
 		ArrayList<Area>list=new ArrayList<Area>();
 		try{
-			String sql="select * from city where pcode='"+pcode+"'";
+			String sql="select * from city_id where pcode='"+pcode+"'";
 			Cursor cursor=db.rawQuery(sql, null);
 			if(cursor.moveToFirst()){
 				do{

@@ -51,6 +51,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		//和风天气获取：https://api.heweather.com/x3/weather?city=石狮&key=dc908906531e4c38886eb3245eab890d
 		//city=石狮市获取不到天气
 		//和风天气获取：https://api.heweather.com/x3/weather?cityid=CN101010100&key=dc908906531e4c38886eb3245eab890d
+		//用city.s3db无法获得和风天气需要的cityid码，市区名称也无法对应
 		String districtCode=getIntent().getStringExtra("districtCode");
 		if(districtCode!=null){
 			String address="https://api.heweather.com/x3/weather?city="+districtCode+"&key=dc908906531e4c38886eb3245eab890d";
