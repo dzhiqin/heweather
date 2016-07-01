@@ -136,7 +136,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.homeBtn:
-			Intent intent=new Intent(MainActivity.this,ChooseAreaActivity.class);
+			//Intent intent=new Intent(MainActivity.this,ChooseAreaActivity.class);
+			Intent intent=new Intent(MainActivity.this,SearchAreaActivity.class);
 			startActivity(intent);
 			break;
 		case R.id.refreshBtn:

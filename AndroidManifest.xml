@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.heweather.activity.ChooseAreaActivity"></activity>
+        <activity android:name="com.example.heweather.activity.SearchAreaActivity"></activity>"
         </application>
 
 </manifest>
