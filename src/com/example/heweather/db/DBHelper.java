@@ -99,6 +99,24 @@ public class DBHelper {
 		}
 		dbm.closeDatabase();
 		db.close();
+		return list; 
+	}
+	
+	//从cityid.db数据库获取城市拼音列表
+	public ArrayList<String> getPinYin(){
+		dbm.openDatabase();
+		db=dbm.getDatabase();
+		ArrayList<String> list=new ArrayList<String>();
+		//查询表city_id下的列city_spell_zh所有数据
+		Cursor cursor=db.query("city_id", new String[]{"city_spell_zh"}, null,null,null,null,null);
+		if(cursor.moveToFirst()){
+			do{
+				String pinyin=cursor.getString(cursor.getColumnIndex("city_spell_zh"));
+				list.add(pinyin);
+			}while(cursor.moveToNext());
+		}
+		dbm.closeDatabase();
+		db.close();
 		return list;
 	}
 }

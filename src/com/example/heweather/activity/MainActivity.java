@@ -4,6 +4,8 @@ import com.example.heweather.R;
 import com.example.heweather.R.id;
 import com.example.heweather.R.layout;
 import com.example.heweather.R.menu;
+import com.example.heweather.db.DBHelper;
+import com.example.heweather.db.DBManager;
 import com.example.heweather.util.HttpCallbackListener;
 import com.example.heweather.util.HttpUtil;
 import com.example.heweather.util.LogUtil;
@@ -132,13 +134,21 @@ public class MainActivity extends Activity implements OnClickListener{
 		return super.onOptionsItemSelected(item);
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.homeBtn:
-			//Intent intent=new Intent(MainActivity.this,ChooseAreaActivity.class);
-			Intent intent=new Intent(MainActivity.this,SearchAreaActivity.class);
-			startActivity(intent);
+			if(DBManager.CHOOSE_DB==1){//选择ChoseAreaActivity使用数据库city.s3db
+				Intent intent=new Intent(MainActivity.this,ChooseAreaActivity.class);
+				startActivity(intent);
+			}else{//选择SearchAreaActivity使用数据库city.db
+				Intent intent=new Intent(MainActivity.this,SearchAreaActivity.class);
+				startActivity(intent);
+			}
+			
+			
+			
 			break;
 		case R.id.refreshBtn:
 			break;

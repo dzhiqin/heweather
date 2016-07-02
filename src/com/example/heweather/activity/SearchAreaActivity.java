@@ -1,6 +1,9 @@
 package com.example.heweather.activity;
 
+import java.util.ArrayList;
+
 import com.example.heweather.R;
+import com.example.heweather.db.DBHelper;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -20,10 +24,15 @@ public class SearchAreaActivity extends Activity {
 	private EditText searchEditText;
 	private ImageView deleteImageView;
 	private ListView mListView;
+	private DBHelper dbHelper;
+	private ArrayAdapter<String> adapter;
+	private ArrayList<String> pinyinList;
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.select_area);
+		dbHelper=new DBHelper(this);//实例化dbHelper
+		mListView=(ListView)findViewById(R.id.listView);
 		deleteImageView=(ImageView)findViewById(R.id.delete_imageView);
 		searchEditText=(EditText)findViewById(R.id.search_editText);
 		
@@ -65,6 +74,11 @@ public class SearchAreaActivity extends Activity {
 				
 			}
 		});
+		
+		//获得pinyinList
+		pinyinList=dbHelper.getPinYin();
+		adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, pinyinList);
+		mListView.setAdapter(adapter);
 	}
 
 }
