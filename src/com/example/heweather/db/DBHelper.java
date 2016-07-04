@@ -119,4 +119,22 @@ public class DBHelper {
 		db.close();
 		return list;
 	}
+	
+	//从cityid.db数据库获取城市，地区，省份
+	public ArrayList<String> getArea(){
+		dbm.openDatabase();
+		db=dbm.getDatabase();
+		ArrayList<String> list=new ArrayList<String>();
+		//查询city_id表下的列 city_area和city_province
+		Cursor cursor=db.query("city_id", new String[]{"city_area","city_province" }, null, null, null, null, null);
+		if(cursor.moveToFirst()){
+			do{
+				String area=cursor.getString(cursor.getColumnIndex("city_area"))+","+cursor.getString(cursor.getColumnIndex("city_province"));
+				list.add(area);
+			}while(cursor.moveToNext());
+		}
+		dbm.closeDatabase();
+		db.close();
+		return list;
+	}
 }
