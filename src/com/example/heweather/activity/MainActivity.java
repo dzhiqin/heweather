@@ -6,6 +6,7 @@ import com.example.heweather.R.layout;
 import com.example.heweather.R.menu;
 import com.example.heweather.db.DBHelper;
 import com.example.heweather.db.DBManager;
+import com.example.heweather.service.AutoUpdateService;
 import com.example.heweather.util.HttpCallbackListener;
 import com.example.heweather.util.HttpUtil;
 import com.example.heweather.util.LogUtil;
@@ -64,6 +65,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		}*/
 		
 		String districtName=getIntent().getStringExtra("districtName");
+		LogUtil.v("TAG", "MainActivity get distrctName="+districtName);
 		if(districtName!=null){
 			String address="https://api.heweather.com/x3/weather?city="+districtName+"&key=dc908906531e4c38886eb3245eab890d";
 			LogUtil.v("TAG", "address="+address);
@@ -71,10 +73,17 @@ public class MainActivity extends Activity implements OnClickListener{
 		}else{
 			showWeather();
 		}
+		//启动一个服务，用于定时更新天气
+		Intent i=new Intent(this,AutoUpdateService.class);
+		startService(i);
 		
 		
 	}
 
+	protected void onResume(){
+		super.onResume();
+		
+	}
 	private void queryFromServer(final String address, final String type) {
 		HttpUtil.sendHttpRequest(address, new HttpCallbackListener(){
 
@@ -151,13 +160,12 @@ public class MainActivity extends Activity implements OnClickListener{
 			if(DBManager.CHOOSE_DB==1){//选择ChoseAreaActivity使用数据库city.s3db
 				Intent intent=new Intent(MainActivity.this,ChooseAreaActivity.class);
 				startActivity(intent);
+				finish();
 			}else{//选择SearchAreaActivity使用数据库city.db
 				Intent intent=new Intent(MainActivity.this,SearchAreaActivity.class);
 				startActivity(intent);
-			}
-			
-			
-			
+				finish();
+			}			
 			break;
 		case R.id.refreshBtn:
 			break;

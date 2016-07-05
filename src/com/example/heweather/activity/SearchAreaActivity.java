@@ -85,8 +85,9 @@ public class SearchAreaActivity extends Activity {
 				String[] districtProvince=subDataList.get(position).split(",");
 				String districtName=districtProvince[0];
 				Intent intent=new Intent(SearchAreaActivity.this,MainActivity.class);
-				intent.putExtra("ditrictName", districtName);
+				intent.putExtra("districtName", districtName);				
 				startActivity(intent);
+				finish();//当跳到别的activity后，结束本活动
 			}
 		});
 		//deleteImageView监听事件
@@ -108,6 +109,7 @@ public class SearchAreaActivity extends Activity {
 		mListView.setAdapter(adapter);
 	}
 
+	
 	//当searchEditText有输入时就进入这个程序
 	Runnable eChanged=new Runnable(){
 
