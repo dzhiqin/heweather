@@ -8,8 +8,10 @@ import com.example.heweather.util.LogUtil;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -84,10 +86,14 @@ public class SearchAreaActivity extends Activity {
 				Toast.makeText(SearchAreaActivity.this, subDataList.get(position), Toast.LENGTH_SHORT).show();
 				String[] districtProvince=subDataList.get(position).split(",");
 				String districtName=districtProvince[0];
+				//把districtName保存到prefs,在MainActivity里判断districtName是否存在，存在就更新数据，这样每次打开软件都会更新
+				SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(SearchAreaActivity.this).edit();
+				editor.putString("cityName", districtName);
+				editor.commit();
 				Intent intent=new Intent(SearchAreaActivity.this,MainActivity.class);
-				intent.putExtra("districtName", districtName);				
+				//intent.putExtra("districtName", districtName);				
 				startActivity(intent);
-				finish();//当跳到别的activity后，结束本活动
+				finish();//当跳到别的activity后，结束本activity
 			}
 		});
 		//deleteImageView监听事件

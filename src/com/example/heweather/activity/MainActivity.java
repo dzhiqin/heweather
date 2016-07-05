@@ -63,9 +63,12 @@ public class MainActivity extends Activity implements OnClickListener{
 		}else{
 			showWeather();
 		}*/
-		
-		String districtName=getIntent().getStringExtra("districtName");
-		LogUtil.v("TAG", "MainActivity get distrctName="+districtName);
+		//查看districtName是否已经选择了，如果选择了就更新一次数据
+		SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(this);
+		String districtName=prefs.getString("cityName", "unknown");
+		LogUtil.v("TAG", "prefs get the selected district:"+districtName);
+		//String districtName=getIntent().getStringExtra("districtName");
+		//LogUtil.v("TAG", "MainActivity get distrctName="+districtName);
 		if(districtName!=null){
 			String address="https://api.heweather.com/x3/weather?city="+districtName+"&key=dc908906531e4c38886eb3245eab890d";
 			LogUtil.v("TAG", "address="+address);
@@ -73,9 +76,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		}else{
 			showWeather();
 		}
-		//启动一个服务，用于定时更新天气
-		Intent i=new Intent(this,AutoUpdateService.class);
-		startService(i);
+		
 		
 		
 	}
@@ -131,7 +132,9 @@ public class MainActivity extends Activity implements OnClickListener{
 		tempText.setText(prefs.getString("todayMin","min")+"~"+prefs.getString("todayMax", "max"));
 		despText.setText(prefs.getString("todayDesp", ""));
 		
-		
+		//启动一个服务，用于定时更新天气
+		Intent i=new Intent(this,AutoUpdateService.class);
+		startService(i);
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -168,6 +171,11 @@ public class MainActivity extends Activity implements OnClickListener{
 			}			
 			break;
 		case R.id.refreshBtn:
+			publishTimeText.setText("同步失败");
+			SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(this);
+			String districtName=prefs.getString("cityName", "unknown");
+			String address="https://api.heweather.com/x3/weather?city="+districtName+"&key=dc908906531e4c38886eb3245eab890d";
+			queryFromServer(address,"weather");
 			break;
 		default:break;
 		}
