@@ -89,9 +89,9 @@ public class SearchAreaActivity extends Activity {
 				//把districtName保存到prefs,在MainActivity里判断districtName是否存在，存在就更新数据，这样每次打开软件都会更新
 				SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(SearchAreaActivity.this).edit();
 				editor.putString("cityName", districtName);
+				
 				editor.commit();
-				Intent intent=new Intent(SearchAreaActivity.this,MainActivity.class);
-				//intent.putExtra("districtName", districtName);				
+				Intent intent=new Intent(SearchAreaActivity.this,MainActivity.class);				
 				startActivity(intent);
 				finish();//当跳到别的activity后，结束本activity
 			}

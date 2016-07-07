@@ -13,6 +13,9 @@ import com.example.heweather.util.LogUtil;
 import com.example.heweather.util.Utility;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,6 +28,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnClickListener{
 
@@ -35,6 +39,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	private TextView dateText;
 	private TextView despText;
 	private TextView tempText;
+	private ProgressDialog progressDialog;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,7 +57,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		homeBtn.setOnClickListener(this);
 		refreshBtn.setOnClickListener(this);
 		
-		//和风天气获取：https://api.heweather.com/x3/weather?city=石狮&key=dc908906531e4c38886eb3245eab890d
+		//和风天气获取：https://api.heweather.com/x3/weather?city=顺义&key=dc908906531e4c38886eb3245eab890d
 		//city=石狮市获取不到天气
 		//和风天气获取：https://api.heweather.com/x3/weather?cityid=CN101010100&key=dc908906531e4c38886eb3245eab890d
 		//用city.s3db无法获得和风天气需要的cityid码，市区名称也无法对应
@@ -65,22 +71,31 @@ public class MainActivity extends Activity implements OnClickListener{
 		}*/
 		//查看districtName是否已经选择了，如果选择了就更新一次数据
 		SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(this);
+		
 		String districtName=prefs.getString("cityName", "unknown");
-		LogUtil.v("TAG", "prefs get the selected district:"+districtName);
-		//String districtName=getIntent().getStringExtra("districtName");
-		//LogUtil.v("TAG", "MainActivity get distrctName="+districtName);
-		if(districtName!=null){
+		LogUtil.v("TAG", "prefs  get the selected  distrctName="+districtName);
+		if(!"unknown".equals(districtName)){
 			String address="https://api.heweather.com/x3/weather?city="+districtName+"&key=dc908906531e4c38886eb3245eab890d";
 			LogUtil.v("TAG", "address="+address);
-			queryFromServer(address,"weather");
+			queryFromServer(address,"weather");			
+			//设置一个title为空，message为“正在加载”，不确定进度，可取消，带有取消事件监听的进度条对话框
+			progressDialog=ProgressDialog.show(this, "", "正在加载",true,true,new OnCancelListener(){		
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					Toast.makeText(MainActivity.this, "取消加载", Toast.LENGTH_SHORT).show();
+					
+				}});
+		
+			
 		}else{
 			showWeather();
 		}
 		
 		
-		
 	}
 
+	
 	protected void onResume(){
 		super.onResume();
 		
@@ -108,13 +123,14 @@ public class MainActivity extends Activity implements OnClickListener{
 			}
 
 			@Override
-			public void onError(Exception e) {
+			public void onError(final Exception e) {
 				e.printStackTrace();
 				runOnUiThread(new Runnable(){
 
 					@Override
 					public void run() {
 						publishTimeText.setText("同步失败");
+						
 					}
 					
 				});
@@ -125,6 +141,9 @@ public class MainActivity extends Activity implements OnClickListener{
 	}
 
 	private void showWeather() {
+		if(progressDialog!=null){
+			progressDialog.dismiss();
+		}		
 		SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(this);
 		localText.setText(prefs.getString("cityName", "未知"));
 		publishTimeText.setText(prefs.getString("publishTime", "未知"	));
@@ -171,7 +190,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			}			
 			break;
 		case R.id.refreshBtn:
-			publishTimeText.setText("同步失败");
+			publishTimeText.setText("同步中...");
 			SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(this);
 			String districtName=prefs.getString("cityName", "unknown");
 			String address="https://api.heweather.com/x3/weather?city="+districtName+"&key=dc908906531e4c38886eb3245eab890d";
