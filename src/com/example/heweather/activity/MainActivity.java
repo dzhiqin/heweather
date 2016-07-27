@@ -1,5 +1,7 @@
 package com.example.heweather.activity;
 
+import com.example.heweather.PullableViewLayout;
+import com.example.heweather.PullableViewLayout.PullToRefreshListener;
 import com.example.heweather.R;
 import com.example.heweather.R.id;
 import com.example.heweather.R.layout;
@@ -40,13 +42,15 @@ public class MainActivity extends Activity implements OnClickListener{
 	private TextView despText;
 	private TextView tempText;
 	private ProgressDialog progressDialog;
+	private PullableViewLayout pullLayout;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_main);
-		
+		setContentView(R.layout.activity_main_scrollview);
+		//实例化pullableviewlayout
+		pullLayout=(PullableViewLayout)findViewById(R.id.refresh_view);
 		homeBtn=(Button)findViewById(R.id.homeBtn);
 		refreshBtn=(Button)findViewById(R.id.refreshBtn);
 		localText=(TextView)findViewById(R.id.localText);
@@ -56,7 +60,22 @@ public class MainActivity extends Activity implements OnClickListener{
 		tempText=(TextView)findViewById(R.id.tempText);
 		homeBtn.setOnClickListener(this);
 		refreshBtn.setOnClickListener(this);
-		
+		/**
+		 * 添加下拉刷新监听事件
+		 */
+		pullLayout.setOnRefreshListener(new PullToRefreshListener(){
+
+			@Override
+			public void onRefresh() {
+				try{
+					Thread.sleep(3000);
+				}catch(InterruptedException e){
+					e.printStackTrace();
+				}
+				pullLayout.refreshingFinish();
+			}
+			
+		}, 0);
 		//和风天气获取：https://api.heweather.com/x3/weather?city=顺义&key=dc908906531e4c38886eb3245eab890d
 		//city=石狮市获取不到天气
 		//和风天气获取：https://api.heweather.com/x3/weather?cityid=CN101010100&key=dc908906531e4c38886eb3245eab890d

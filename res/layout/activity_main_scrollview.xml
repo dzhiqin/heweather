@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.heweather.PullableViewLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/refresh_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    
+    <include layout="@layout/header_layout"/>
+    <com.example.heweather.PullableView.PullableScrollView 
+        android:id="@+id/content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout 
+    
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical" >
+	
+	    <RelativeLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="50dp"
+	        android:background="#00BFFF">
+	        <Button 
+	            android:id="@+id/homeBtn"
+	            android:layout_width="40dp"
+	            android:layout_height="40dp"
+	            android:layout_marginLeft="10dp"
+	            android:background="@drawable/home"/>
+	        <TextView
+	            android:id="@+id/localText"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerInParent="true"
+	            />
+	        <Button
+	            android:id="@+id/refreshBtn"
+	            android:layout_width="40dp"
+	            android:layout_height="40dp"
+	            android:layout_alignParentRight="true"
+	            android:layout_marginRight="10dp"
+	            android:background="@drawable/refresh"/>
+	    </RelativeLayout>
+	  
+	    <RelativeLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:background="#00BFFF">
+	        <TextView
+	            android:id="@+id/publishTimeText"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentTop="true"
+	            android:layout_alignParentRight="true"
+	            />
+	        
+	        <LinearLayout 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerInParent="true"
+	            android:orientation="vertical">
+	            <TextView
+	                android:id="@+id/dateText"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                />
+	            <TextView
+	                android:id="@+id/tempText"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_gravity="center"
+	                android:textSize="40sp"
+	                />
+	            <TextView
+	                android:id="@+id/despText"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_gravity="center"
+	                android:textSize="30sp"
+	                />
+	            </LinearLayout>
+	    </RelativeLayout>
+	</LinearLayout>
+        </com.example.heweather.PullableView.PullableScrollView>
+</com.example.heweather.PullableViewLayout>
+    
