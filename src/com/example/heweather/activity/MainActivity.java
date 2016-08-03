@@ -36,11 +36,11 @@ public class MainActivity extends Activity implements OnClickListener{
 
 	private Button homeBtn;
 	private Button refreshBtn;
-	private TextView localText;
-	private TextView publishTimeText;
-	private TextView dateText;
-	private TextView despText;
-	private TextView tempText;
+	public TextView localText;
+	public TextView publishTimeText;
+	public  TextView dateText;
+	public TextView despText;
+	public  TextView tempText;
 	private ProgressDialog progressDialog;
 	private PullableViewLayout pullLayout;
 	

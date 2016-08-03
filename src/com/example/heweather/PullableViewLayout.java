@@ -1,14 +1,29 @@
 package com.example.heweather;
 
 
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import com.example.heweather.util.LogUtil;
+import com.example.heweather.util.Utility;
+import com.example.heweather.activity.MainActivity;
 import com.example.heweather.interfaces.*;
+
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -282,10 +297,10 @@ public class PullableViewLayout extends LinearLayout implements View.OnTouchList
 	/**
 	 * 正在刷新的任务，在此任务中会去回调注册进来的下拉刷新监听器
 	 */
-	class RefreshingTask extends AsyncTask<Void,Integer,Void>{
+	class RefreshingTask extends AsyncTask<Void,Integer,String>{
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected String doInBackground(Void... params) {
 			int topMargin=headerLayoutParams.topMargin;
 			/**
 			 * topMargin连续减SCROLL_SPEED,每次减去都延迟10ms，直到<=0,这中间所用掉的时间就是下拉头回滚的时间
@@ -309,6 +324,27 @@ public class PullableViewLayout extends LinearLayout implements View.OnTouchList
 			currentStatus=STATUS_REFRESHING;
 			publishProgress(0);
 			/**
+			 * 添加下拉刷新获取天气信息功能
+			 */
+			SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getContext());
+			String districtName=prefs.getString("cityName","unknown");
+			String address="https://api.heweather.com/x3/weather?city="+districtName+"&key=dc908906531e4c38886eb3245eab890d";
+			/**
+			 * 获取的天气信息结果
+			 */
+			String response=null;
+			try{
+				HttpClient hc=new DefaultHttpClient();
+				HttpGet hg=new HttpGet(address);
+				HttpResponse httpResponse=hc.execute(hg);
+				if(httpResponse.getStatusLine().getStatusCode()==200){
+					HttpEntity entity=httpResponse.getEntity();
+					response=EntityUtils.toString(entity,"utf-8");
+				}
+			}catch(IOException e){
+				e.printStackTrace();
+			}
+			/**
 			 * 执行完header回滚置顶之后再执行，
 			 * 外部为PullableListViewActivity里注册了setOnRefreshListener监听器，mListtener=listener
 			 * 设置mListener就是用来回调onRefresh的
@@ -316,7 +352,7 @@ public class PullableViewLayout extends LinearLayout implements View.OnTouchList
 			if(mListener!=null){
 				mListener.onRefresh();
 			}
-			return null;
+			return response;
 		}
 		@Override
 		protected void onProgressUpdate(Integer...topMargin){
@@ -328,6 +364,26 @@ public class PullableViewLayout extends LinearLayout implements View.OnTouchList
 			updateHeaderView();
 			headerLayoutParams.topMargin=topMargin[0];
 			header.setLayoutParams(headerLayoutParams);
+		}
+		/**
+		 * doInBackground的返回值进入这里
+		 * 在ui线程中运行
+		 */
+		@Override
+		protected void onPostExecute(String response){
+			/**
+			 * 尝试使用弱引用
+			 */
+			WeakReference<MainActivity> thisLayout=new WeakReference<MainActivity>(null);
+			final MainActivity theLayout=thisLayout.get();
+		
+			Utility.handleWeatherResponse(getContext(),response);
+			SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getContext());
+			theLayout.localText.setText(prefs.getString("cityName", "未知"));
+			theLayout.publishTimeText.setText(prefs.getString("publishTime", "未知"	));
+			theLayout.dateText.setText(prefs.getString("todayDate", "未知"));
+			theLayout.tempText.setText(prefs.getString("todayMin","min")+"~"+prefs.getString("todayMax", "max"));
+			theLayout.despText.setText(prefs.getString("todayDesp", ""));
 		}
 	}
 	/**
