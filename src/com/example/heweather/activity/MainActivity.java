@@ -1,5 +1,14 @@
 package com.example.heweather.activity;
 
+import java.io.IOException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import com.example.heweather.PullableViewLayout;
 import com.example.heweather.PullableViewLayout.PullToRefreshListener;
 import com.example.heweather.R;
@@ -16,6 +25,7 @@ import com.example.heweather.util.Utility;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
@@ -66,13 +76,19 @@ public class MainActivity extends Activity implements OnClickListener{
 		pullLayout.setOnRefreshListener(new PullToRefreshListener(){
 
 			@Override
-			public void onRefresh() {
+			public void onRefresh() {				
 				try{
 					Thread.sleep(3000);
 				}catch(InterruptedException e){
 					e.printStackTrace();
-				}
+				}			
 				pullLayout.refreshingFinish();
+		
+			}
+
+			private Context getContext() {
+				// TODO 自动生成的方法存根
+				return null;
 			}
 			
 		}, 0);
@@ -160,6 +176,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	}
 
 	private void showWeather() {
+		LogUtil.v("TAG", "MainActivity_showWeather");
 		if(progressDialog!=null){
 			progressDialog.dismiss();
 		}		

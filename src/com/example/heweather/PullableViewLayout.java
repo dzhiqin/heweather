@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -179,7 +180,7 @@ public class PullableViewLayout extends LinearLayout implements View.OnTouchList
 	public boolean onTouch(View v, MotionEvent event) {
 		switch(event.getActionMasked()){
 		case MotionEvent.ACTION_DOWN://触摸检测
-			LogUtil.v("test", "ACTION_DOWN");
+			//LogUtil.v("test", "ACTION_DOWN");
 			yDown=event.getRawY();
 			mEvent=0;
 			break;
@@ -190,7 +191,7 @@ public class PullableViewLayout extends LinearLayout implements View.OnTouchList
 			mEvent=-1;
 			break;
 		case MotionEvent.ACTION_MOVE://移动检测
-			LogUtil.v("test", "ACTION_MOVE");
+			//LogUtil.v("test", "ACTION_MOVE");
 			
 			if(mEvent==0&&((Pullable)pullableView).canPullDown())
 			{
@@ -282,11 +283,11 @@ public class PullableViewLayout extends LinearLayout implements View.OnTouchList
 		float fromDegrees=0f;
 		float toDegrees=0f;
 		if(currentStatus==STATUS_PULL_TO_REFRESH){
-			fromDegrees=0f;
-			toDegrees=180f;
-		}else if(currentStatus==STATUS_RELEASE_TO_REFRESH){
 			fromDegrees=180f;
 			toDegrees=360f;
+		}else if(currentStatus==STATUS_RELEASE_TO_REFRESH){
+			fromDegrees=0f;
+			toDegrees=180f;
 		}
 		RotateAnimation animation=new RotateAnimation(fromDegrees,toDegrees,pivotX,pivotY);
 		animation.setDuration(100);
@@ -367,23 +368,24 @@ public class PullableViewLayout extends LinearLayout implements View.OnTouchList
 		}
 		/**
 		 * doInBackground的返回值进入这里
-		 * 在ui线程中运行
+		 * 在ui线程中运行，更新天气信息
 		 */
 		@Override
 		protected void onPostExecute(String response){
-			/**
-			 * 尝试使用弱引用
-			 */
-			WeakReference<MainActivity> thisLayout=new WeakReference<MainActivity>(null);
-			final MainActivity theLayout=thisLayout.get();
 		
-			Utility.handleWeatherResponse(getContext(),response);
+			Utility.handleWeatherResponse(getContext(), response);
+			TextView localText=(TextView)pullableView.findViewById(R.id.localText);
+			TextView publishTimeText=(TextView)pullableView.findViewById(R.id.publishTimeText);
+			TextView dateText=(TextView)pullableView.findViewById(R.id.dateText);
+			TextView tempText=(TextView)pullableView.findViewById(R.id.tempText);
+			TextView despText=(TextView)pullableView.findViewById(R.id.despText);
 			SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(getContext());
-			theLayout.localText.setText(prefs.getString("cityName", "未知"));
-			theLayout.publishTimeText.setText(prefs.getString("publishTime", "未知"	));
-			theLayout.dateText.setText(prefs.getString("todayDate", "未知"));
-			theLayout.tempText.setText(prefs.getString("todayMin","min")+"~"+prefs.getString("todayMax", "max"));
-			theLayout.despText.setText(prefs.getString("todayDesp", ""));
+			localText.setText(prefs.getString("cityName", "未知"));
+			publishTimeText.setText(prefs.getString("publishTime", "未知"	));
+			dateText.setText(prefs.getString("todayDate", "未知"));
+			tempText.setText(prefs.getString("todayMin","min")+"~"+prefs.getString("todayMax", "max"));
+			despText.setText(prefs.getString("todayDesp", ""));
+			//LogUtil.v("test", "update despText:"+despText.getText().toString());
 		}
 	}
 	/**
